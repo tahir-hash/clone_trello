@@ -1,0 +1,220 @@
+*, ::after, ::before
+{
+    box-sizing: border-box;
+}
+body
+{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #E7E2CE;
+}
+.add
+{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    display: none;
+}
+
+.focus
+{
+    cursor: pointer;
+}
+.add.show
+{
+    display: flex;
+    animation-name: backInDown;
+    animation-duration: 0.5s;
+}
+#set
+{
+    position: fixed;
+    bottom: 3%;
+    left: 1%;
+}
+
+.add span
+{
+    border-left: solid 3px black;
+    border-radius: 5px;
+    background-color: #BDB7A5;
+    margin-bottom: 0.2%;
+    padding-left: 0.5%;
+    padding-top: 0.3%;
+    height: 4vh;
+}
+.add span:hover
+{
+    background-color: #a8a3a3;
+}
+#subcontain
+{
+    display: flex;
+    flex-wrap: wrap;
+    
+}
+.contain_element
+{
+    display: flex;
+    flex-direction: column;
+    margin-left: 3%;
+    border: 1px solid black;
+    width: 15%;
+    background-image: url('logo-removebg-preview.png');
+    background-repeat: no-repeat;
+   background-position: center;
+   background-size: 100%;
+   animation-duration: 1s;
+   overflow-y: scroll;
+}
+.task_name
+{
+    display: flex;
+    border: solid 1px black;
+    border-radius: 10px;
+    padding: 2%;
+    width: 100%;
+    margin: 3% 0%;
+}
+.task_name p
+{
+   text-align: center;
+   width: 60%;
+   text-transform: capitalize;
+}
+.task_name i
+{
+    border-color: none;
+    width: 20%;
+    margin-left: 4%;
+    margin-top: 3%;
+}
+#note
+{
+    display: none;
+}
+.name_col input
+{
+    width: 100%;
+    text-align: center;
+}
+.pos_note
+{
+    /* border: red solid 1px; */
+    width: 100%;
+    height: 80vh;
+    padding: 2%;
+}
+.pos_note img
+{
+    width: 100%;
+    position: static;
+    /* left: 4%;
+    top: 40%;
+    margin-top: 100%; */
+    opacity: 0.2;
+   z-index: -2;
+}
+/* modal */
+.modal
+{
+    width: 25%;
+    top: 17%;
+    left: 37.5%;
+    border: 1px solid black;
+    position: fixed;
+    background-color: white ;
+    display: none;   
+    animation-duration: 1s;
+}
+.modal.show
+{
+    display: block;
+}
+.task
+{
+    background-color: #A08C83;
+    color: white;
+    width: 100%;
+}
+.task h3
+{
+    margin-left: 4%;
+    
+}
+#close
+{
+    position: absolute;
+    left: 93%;
+    top: 3%;
+    font-size: 20px;
+}
+
+.form-control{
+    margin-bottom: 10px;
+    padding-left: 20px;
+    position: relative;
+}
+.form-control textarea{
+    width: 90%;
+}
+.form-control label{
+    color: #777;
+    display: block;
+    margin-bottom: 5px;
+}
+.form-control input{
+    border: 2px solid #f0f0f0;
+    border-radius: 4px;
+    display: block;
+    width: 90%;
+    padding: 10px;
+    font-size: 14px;
+}
+.form button{
+    cursor: pointer;
+    background-color: #007314;
+    border: 2px solid #007314;
+    border-radius: 4px;
+    color: #fff;
+    display: block;
+    font-size: 16px;
+    padding: 10px;
+    margin-top: 20px;
+    margin-left: 5%;
+    width: 90%;
+}
+.form-control input:focus{
+    outline: 0;
+    border-color: #777;
+}
+.sub
+{
+    background-color: #A08C83;
+    color: white;
+    font-size: 20px;
+    border: none;
+    border-radius: 10px;
+    margin-top: 3%;
+}
+.task
+{
+   display: flex;
+   width: 100%;
+}
+.task i
+{
+    margin-top: 6%;
+   margin-left: 67%;
+    color: white;
+}
+.modal p, .modal modal
+{
+    padding-left: 4%;
+}
+
+.modal
+{
+    padding-bottom: 2%;
+
+}
+/* hjcvgdkj, */

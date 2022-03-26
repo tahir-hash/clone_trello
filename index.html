@@ -1,13 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TRELLO</title>
-    
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    
+    <div id="contain">
+        <nav class="add animate__animated">
+              <span id="col">+ADD COLONNE</span>
+                <span id="note">+ADD NOTE</span>
+        </nav>
+        <div id="subcontain">
+            <!-- <div class="contain_element">
+                    <div class="name_col">
+                        <input type="text">
+                    </div>
+                    <div class="pos_note">
+                        <div class="task_name">
+                            <button type="button"><<</button>
+                            <p></p>
+                            <button type="button">>></button>
+                        </div>
+                    </div>
+            </div> -->
+        </div>
+        <div class="modal animate__animated animate__backInLeft">
+            <div class="task">
+                <h3>NOUVELLE TÂCHE</h3> 
+            </div>
+            <p>Remplir les informations de la nouvelle tâche.</p>
+            <form class="form" id="form" method="POST">
+                <div class="form-control">
+                    <label for="tache">Tâche</label>
+                    <textarea name="" id="tache"  rows="10" placeholder="Entrer le libellé"></textarea>
+                    <small></small>
+                </div>
+                <div class="form-control">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" >
+                    <small></small>
+                </div>
+                <div class="form-control">
+                    <label for="start_hour">Heure de Debut</label>
+                    <input type="time" id="start_hour" >
+                    <small></small>
+                </div>
+                <div class="form-control">
+                    <label for="start_end">Heure de Fin </label>
+                    <input type="time" id="start_end" >
+                    <small></small>
+                </div>
+                <button type="submit" id="submit">Submit</button>
+                <input id="close" type="reset" value="x">
+            </form>
+        </div>
+    </div>
+     <i id="set" class="fa-solid fa-gear fa-2x"></i>
+    <script src="script.js"></script>
 </body>
 </html>
