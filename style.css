@@ -66,7 +66,12 @@ body
    animation-duration: 1s;
    overflow-y: scroll;
 }
-.task_name
+.task_details
+{
+    display: flex;
+    flex-direction: column;
+}
+.task_name,.more_details
 {
     display: flex;
     border: solid 1px black;
@@ -75,13 +80,26 @@ body
     width: 100%;
     margin: 3% 0%;
 }
-.task_name p
+.more_details
+{
+    display: none;
+}
+.more_details.show 
+{
+    display: flex;
+}
+
+.task_name.show 
+{
+    display: none;
+}
+.task_name p, .more_details .details 
 {
    text-align: center;
    width: 60%;
    text-transform: capitalize;
 }
-.task_name i
+.task_name i, .more_details i
 {
     border-color: none;
     width: 20%;
@@ -115,6 +133,15 @@ body
    z-index: -2;
 }
 /* modal */
+.modal_all
+{
+     display: none; 
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
 .modal
 {
     width: 25%;
@@ -123,10 +150,9 @@ body
     border: 1px solid black;
     position: fixed;
     background-color: white ;
-    display: none;   
     animation-duration: 1s;
 }
-.modal.show
+.modal_all.show
 {
     display: block;
 }
