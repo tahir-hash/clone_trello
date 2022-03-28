@@ -71,7 +71,7 @@ body
     display: flex;
     flex-direction: column;
 }
-.task_name,.more_details
+.task_name
 {
     display: flex;
     border: solid 1px black;
@@ -80,26 +80,26 @@ body
     width: 100%;
     margin: 3% 0%;
 }
-.more_details
-{
-    display: none;
-}
-.more_details.show 
-{
-    display: flex;
-}
 
-.task_name.show 
+.details.show p
 {
     display: none;
 }
-.task_name p, .more_details .details 
+.details.show h4
+{
+    display: block;
+}
+.task_name h4
+{
+    display: none;
+}
+.task_name .details
 {
    text-align: center;
    width: 60%;
    text-transform: capitalize;
 }
-.task_name i, .more_details i
+.task_name i
 {
     border-color: none;
     width: 20%;
@@ -151,6 +151,7 @@ body
     position: fixed;
     background-color: white ;
     animation-duration: 1s;
+   
 }
 .modal_all.show
 {

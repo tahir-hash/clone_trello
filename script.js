@@ -15,7 +15,7 @@ const end_hour= document.getElementById('start_end');
 const submit= document.getElementById('submit');
 ///
 var nbrElements = 0;
-const tab = ['#73FEFF','#47A4FF',"#FF7654","#EAE9BA","#FAD414"]
+const tab = ['#C1E1F5','#952D14',"#F6F46A","#D6CE8B","#FAD49F"]
 colonne.addEventListener('click',()=> 
 {
          nbrElements++;
@@ -24,7 +24,7 @@ console.log(nbrElements);
       const subcontain = document.getElementById("subcontain");
       const contain_element = document.createElement("div");
       contain_element.style.backgroundColor=tab[nbrElements-1];
-      contain_element.setAttribute("class", "contain_element animate__animated animate__jackInTheBox");
+      contain_element.setAttribute("class", "contain_element animate__animated animate__rotateInDownLeft");
       const name_col = document.createElement("div");
       name_col.setAttribute("class", "name_col");
       const input = document.createElement("input");
@@ -49,6 +49,7 @@ console.log(nbrElements);
       {
          note.style.display='block';
       }
+      //buuton
       //event
       name_col.addEventListener('dblclick', ()=>{
          input.toggleAttribute('disabled');
@@ -71,80 +72,69 @@ close.addEventListener('click',()=>{
 setting.addEventListener('click', ()=>{
       add.classList.toggle('show');
 });
+var cpt=1;
 
 // add task
 
 function add_task(div)
 {
    const task_details=document.createElement('div');
-   const more_details=document.createElement('div');
-   more_details.setAttribute('class','more_details');
-   task_details.setAttribute('class','task_details');
+   task_details.setAttribute('class','task_details animate__animated animate__jackInTheBox');
    const task_name=document.createElement('div');
    task_name.setAttribute('class','task_name');
    const left_btn=document.createElement('i');
-   left_btn.setAttribute('class','fa-solid fa-angles-left fa-2x');
+   left_btn.setAttribute('class','fa-solid fa-angles-left fa-2x left');
    const right_btn=document.createElement('i');
-   right_btn.setAttribute('class','fa-solid fa-angles-right fa-2x');
-   const left_btn1=document.createElement('i');
-   left_btn1.setAttribute('class','fa-solid fa-angles-left fa-2x');
-   const right_btn1=document.createElement('i');
-   right_btn1.setAttribute('class','fa-solid fa-angles-right fa-2x');
+   right_btn.setAttribute('class','fa-solid fa-angles-right fa-2x right');
    const details =document.createElement('div');
    details.setAttribute('class','details');
    const p=document.createElement('p');
    p.innerText= tache.value ;
-   const p2=document.createElement('p');
-   p2.innerText= "Date:"+date.value ;
-   const p3=document.createElement('p');
-   p3.innerText="Heure debut:"+start_hour.value ;
-   const p4=document.createElement('p');
-   p4.innerText= "Heure fin:"+end_hour.value ;
+   const h4=document.createElement('h4');
+   h4.innerText= "Date:"+date.value ;
+   const h41=document.createElement('h4');
+   h41.innerText="Heure debut:"+start_hour.value ;
+   const h42=document.createElement('h4');
+   h42.innerText= "Heure fin:"+end_hour.value ;
    //apend
    task_name.appendChild(left_btn);
-   task_name.appendChild(p);
+   details.appendChild(p);
+   details.appendChild(h4);
+   details.appendChild(h41);
+   details.appendChild(h42);
+   task_name.appendChild(details);
    task_name.appendChild(right_btn);
-   more_details.appendChild(left_btn1);
-   details.appendChild(p2);
-   details.appendChild(p3);
-   details.appendChild(p4);
-   more_details.appendChild(details);
-   more_details.appendChild(right_btn1);
    task_details.appendChild(task_name);
-   task_details.appendChild(more_details);
    div.appendChild(task_details);
    //event
    task_name.addEventListener('mouseover',()=>{
-      task_name.classList.add('show');
-      more_details.classList.add('show');
+      details.classList.add('show');
    });
    task_name.addEventListener('mouseleave',()=>{
-      task_name.classList.remove('show');
-      more_details.classList.remove('show');
+      details.classList.remove('show');
    });
-   var id1=document.getElementById('1');
-   var id2=document.getElementById('2');
    //
-   cpt=1;
    right_btn.addEventListener('click', ()=>{
-      cpt++;
          task_details.classList.add('select');
-         deplacer(document.getElementById(cpt))
-         console.log(document.getElementById(cpt))
+         var recupId=parseInt(task_details.parentElement.getAttribute("id"));
+         console.log(task_details.parentElement.getAttribute("id"))
+         var recupId=recupId+1
+         deplacer(document.getElementById(recupId))
+         //console.log(document.getElementById(cpt))
          task_details.classList.remove('select');
    });
    left_btn.addEventListener('click', ()=>{
-      for(var i=1; i<=5;i++)
-      {
          task_details.classList.add('select');
-         deplacer(document.getElementById(i))
-         console.log(document.getElementById(i))
+         var recupId=parseInt(task_details.parentElement.getAttribute("id"));
+         var recupId=recupId-1
+         deplacer(document.getElementById(recupId))
+         //console.log(document.getElementById(cpt))
          task_details.classList.remove('select');
-      }
    });
+   
 }
 
-form.addEventListener('submit', async (e)=>{
+form.addEventListener('submit', (e)=>{
    e.preventDefault();
    id1=document.getElementById('1');
    add_task(id1);
@@ -167,7 +157,6 @@ form.addEventListener('submit', async (e)=>{
        .then(response => response.json())
        .then(data=> console.log(data))
    });
-   
      rebuild()
 });
 //rebuild
@@ -183,12 +172,10 @@ function deplacer (to)
 {
    const tab_task=document.querySelectorAll('.task_details');
    tab_task.forEach(element => {
-      for(var i=1; i<=5;i++)
-      {
+      
          if(element.classList.contains('select'))
          {
             to.appendChild(element);
          }
-      }
    });
 }
