@@ -5,15 +5,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TRELLO</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="contain">
         <nav class="add animate__animated">
-              <span id="col">+ADD COLONNE</span>
+            <div class="added">
+                 <span id="col">+ADD COLONNE</span>
                 <span id="note">+ADD NOTE</span>
+            </div>
         </nav>
         <div id="subcontain">
             <!-- <div class="contain_element">
@@ -24,17 +26,28 @@
                         <div class="task_details">
                             <div class="task_name">
                                 <i class="fa-solid fa-angles-left fa-2x"></i>
-                                <div class="details">
-                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente, laborum voluptatibus necessitatibus odio libero aliquam dolore temporibus ipsum labore modi, ullam voluptates optio quam odit iure dolorum facere asperiores velit!</p>
-                                    <h4>Date: 30/21/2020</h4>
-                                    <h4>Heure debut: 21:12</h4>
-                                    <h4>Heure fin: 21:16</h4>
-                                </div>
+                                <div class="text_des">
+                                    <div class="des">
+                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente, laborum voluptatibus necessitatibus odio libero aliquam dolore temporibus ipsum labore modi, ullam voluptates optio quam odit iure dolorum facere asperiores velit!</p>
+                                    </div>
+                                    <div class="details">
+                                        <h4>Date: 30/21/2020</h4>
+                                        <h4>Heure debut: 21:12</h4>
+                                        <h4>Heure fin: 21:16</h4>
+                                    </div>
+                                </div>                              
                                 <i class="fa-solid fa-angles-right fa-2x"></i>
                             </div>
                         </div>
                     </div>
             </div> -->
+
+            <div class="restore contain_element">
+                    <h2>Corbeille</h2>
+                    <div id="Corbeille" class="contain_task">
+
+                    </div>                
+            </div>
         </div>
         <div class="modal_all">
             <div class="modal animate__animated animate__backInLeft">
@@ -45,7 +58,7 @@
                 <form class="form" id="form" method="POST">
                     <div class="form-control">
                         <label for="tache">Tâche</label>
-                        <textarea name="" id="tache" class="test" rows="10" placeholder="Entrer le libellé"></textarea>
+                        <textarea date-task="" name="" id="tache" class="test" rows="10" placeholder="Entrer le libellé"></textarea>
                         <small></small>
                     </div>
                     <div class="form-control">
@@ -68,9 +81,12 @@
                 </form>
             </div>
         </div>
-       
     </div>
      <i id="set" class="fa-solid fa-gear fa-2x"></i>
+     <i id="refresh" class="fa-solid fa-arrows-rotate fa-2x"></i>
+     <i id="burger" class="fa-solid fa-bars fa-2x"></i>
+     <!-- script -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js" integrity="sha512-LGXaggshOkD/at6PFNcp2V2unf9LzFq6LE+sChH7ceMTDP0g2kn6Vxwgg7wkPP7AAtX+lmPqPdxB47A0Nz0cMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="script.js"></script>
 </body>
 </html>
