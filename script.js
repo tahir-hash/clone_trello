@@ -17,6 +17,13 @@ const date= document.getElementById('date');
 const start_hour= document.getElementById('start_hour');
 const end_hour= document.getElementById('start_end');
 const submit= document.getElementById('submit');
+//valid date
+var date_now= moment();
+   date_now= date_now.format('YYYY-MM-DD');
+   date.setAttribute('min', date_now);
+//valid start hour
+
+
 ///
 var nbrElements = 0;
 const tab_color = ['#C1E1F5','#952D14',"#F6F46A","#D6CE8B","#FAD49F"]
@@ -50,7 +57,6 @@ console.log(nbrElements);
       contain_element.appendChild(div_name);
       contain_element.appendChild(pose_note);
       //subcontain.appendChild(restore);
-      console.log(input.innerText);
       //condition
       if(nbrElements==5)
       {
@@ -59,21 +65,7 @@ console.log(nbrElements);
       if(nbrElements!=0)
       {
          note.style.display='block';
-      }
-      //buuton
-      /* var recuper=document.querySelectorAll('.task_details');
-      recuper.forEach(element => {
-         var recup=parseInt(element.parentElement.getAttribute("id"));
-         var recup= recup+1;
-         setInterval(() => {
-            right_btn.style.visibility='hidden'
-            if(document.getElementById(recup)!=null)
-         {
-            right_btn.style.visibility='visible';
-         }
-         }, 100);
-      }); */
-         
+      }  
       //event
       name_col.addEventListener('click',function(){
          let tempVal = name_col.firstElementChild;
@@ -87,7 +79,6 @@ console.log(nbrElements);
              tempVal.innerHTML = newInput.value;
          })
          newInput.focus();
-         console.log(tempVal)
      });
       trash.addEventListener('click',function(e){
          id_=parseInt(e.target.parentElement.nextElementSibling.getAttribute('id'));
@@ -110,6 +101,7 @@ note.addEventListener('click',()=>{
 //close modal
 close.addEventListener('click',()=>{
    modal_all.classList.remove('show');
+   submit.removeAttribute('data-modif');                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
 });
 //setting icons
 setting.addEventListener('click', ()=>{
@@ -121,7 +113,6 @@ refresh.addEventListener('click', ()=>{
          tasked.forEach(element => {
             if(element.parentElement.id!="Corbeille")
             {
-               console.log(element.parentElement.id)
                element.classList.add('select');
             deplacer(document.getElementById('1'))
             element.classList.remove('select');
@@ -139,11 +130,13 @@ burger.addEventListener('click',()=>{
 function add_task(div)
 {
    const task_details=document.createElement('div');
-   task_details.setAttribute('class','task_details animate__animated animate__jackInTheBox');
+   task_details.setAttribute('class','task_details animate__animated animate__jackInTheBox modif');
    task_details.setAttribute('data-tache', tache.value);
    task_details.setAttribute('data-date', date.value);
    task_details.setAttribute('data-time-start', start_hour.value);
    task_details.setAttribute('data-time-end', end_hour.value);
+   task_details.setAttribute('data-pos', "1");
+
    
    const task_name=document.createElement('div');
    task_name.setAttribute('class','task_name');
@@ -153,6 +146,8 @@ function add_task(div)
    right_btn.setAttribute('class','fa-solid fa-angles-right fa-2x right');
    const del_task=document.createElement('i');
    del_task.setAttribute('class','fa-solid fa-xmark try');
+   /* const recycle= document.createElement('i');
+   recycle.setAttribute('class','fa-solid fa-recycle try') */
    const text_des =document.createElement('div');
    text_des.setAttribute('class','text_des');
    const des =document.createElement('div');
@@ -166,7 +161,7 @@ function add_task(div)
    const h41=document.createElement('h4');
    h41.innerText="Heure debut:"+task_details.getAttribute('data-time-start') ;
    const h42=document.createElement('h4');
-   h42.innerText= "Heure fin:"+task_details.getAttribute('data-time-start');
+   h42.innerText= "Heure fin:"+task_details.getAttribute('data-time-end');
    //apend
    task_name.appendChild(left_btn);
    des.appendChild(p);
@@ -181,7 +176,31 @@ function add_task(div)
    task_details.appendChild(task_name);
    div.appendChild(task_details);
    //fleche
-  
+   setInterval(() => {
+      var dateV = task_details.getAttribute('data-date');
+      var heureStartV = task_details.getAttribute('data-time-start');
+      var heureEndV = task_details.getAttribute('data-time-end');
+
+      var timeStart = heureStartV.split(':');
+      var timeEnd = heureEndV.split(':');
+      // console.log(heure_input_debut);
+      // console.log(min_input_debut);
+
+      var now = new Date();
+      var nowH = now.getHours();
+      var nowM  = now.getMinutes();
+      if((timeStart[0]==nowH) && (timeStart[1] == nowM)){
+          task_name.style.backgroundColor="green";
+      }
+      else if((timeEnd[0]==nowH) && (timeEnd[1] == nowM)){
+         //alert('ok')
+         task_name.style.backgroundColor="#605d5d";
+         left_btn.style.visibility='hidden';
+         right_btn.style.visibility='hidden';
+         task_details.classList.remove('modif');
+     }
+ },1000); 
+ 
    //event
    task_name.addEventListener('mouseenter',()=>{
       text_des.classList.add('show');
@@ -189,73 +208,127 @@ function add_task(div)
    });
    task_name.addEventListener('mouseleave',()=>{
       text_des.classList.remove('show');
-      del_task.classList.remove('show');
+         del_task.classList.remove('show');
    });
+   //restore
+   
    //delete_task
    del_task.addEventListener('click',()=>{
-      /* modal_all.classList.add('show');
-      tache.value= p.innerText; */
+      if(task_details.parentElement.id!="Corbeille")
+      {
       task_details.classList.add('select');
       deplacer(document.getElementById("Corbeille"))
       task_details.classList.remove('select');
+      }
+      else
+      {
+         idn= task_details.getAttribute('data-pos');
+         if(document.getElementById(idn)!=null)
+         {
+            task_details.classList.add('select');
+            idn= task_details.getAttribute('data-pos');
+            deplacer(document.getElementById(idn))
+            task_details.classList.remove('select');
+         }  
+         else
+         {
+            task_details.classList.add('select');
+            task_details.setAttribute('data-pos', "1");
+            deplacer(document.getElementById("1"))
+            task_details.classList.remove('select');
+         } 
+      }
    });
    //update
    task_name.addEventListener('dblclick', ()=>{
       if(task_details.parentElement.id!="Corbeille")
       {
-         modal_all.classList.add('show');
-         tache.value= task_details.getAttribute('data-tache');
-         date.value=task_details.getAttribute('data-date');
-         start_hour.value=task_details.getAttribute('data-time-start');
-         end_hour.value=task_details.getAttribute('data-time-end');
-         submit.setAttribute('data-modif', 'true');
+         if(task_details.classList.contains('modif'))
+         {
+            modal_all.classList.add('show');
+            tache.value= task_details.getAttribute('data-tache');
+            date.value=task_details.getAttribute('data-date');
+            start_hour.value=task_details.getAttribute('data-time-start');
+            end_hour.value=task_details.getAttribute('data-time-end');
+            submit.setAttribute('data-modif', 'true');
+            //submit
+            submit.addEventListener('click', ()=>{
+               if(submit.getAttribute('data-modif')=='true')
+               {
+                  //modification des donnees
+                  task_details.setAttribute('data-tache', tache.value);
+                  task_details.setAttribute('data-date', date.value);
+                  task_details.setAttribute('data-time-start', start_hour.value);
+                  task_details.setAttribute('data-time-end', end_hour.value);
+                  modal_all.classList.remove('show');
+                  p.innerHTML=task_details.getAttribute('data-tache');
+                  h4.innerHTML="Date:"+task_details.getAttribute('data-date');
+                  h41.innerHTML="Heure debut:"+task_details.getAttribute('data-time-start');
+                  h42.innerHTML="Heure fin:"+task_details.getAttribute('data-time-start');
+               }
+               //reset()
+             //  form.reset();
+             //  e.preventDefault();
+            });
+         }
+         
       }
       
    });
+   setInterval(() => {
+      var test=parseInt(task_details.parentElement.getAttribute("id"));
+      if(test==1)
+      {
+         left_btn.style.visibility='hidden'
+      }
+   }, 50);
+
    //deplacement
    right_btn.addEventListener('click', ()=>{
-      
+         left_btn.style.visibility='visible'
+         setInterval(() => {
+            var tab=document.querySelectorAll('.count');
+         var tester=parseInt(task_details.parentElement.getAttribute("id"));
+            if((tester==tab.length))
+            {
+               right_btn.style.visibility='hidden'
+            }
+            else
+            {
+               right_btn.style.visibility='visible'
+            }
+         }, 100);
          task_details.classList.add('select');
          var recupId=parseInt(task_details.parentElement.getAttribute("id"));
-         console.log(task_details.parentElement.getAttribute("id"))
          var recupId=recupId+1
          deplacer(document.getElementById(recupId))
-         //console.log(document.getElementById(cpt))
+         task_details.setAttribute('data-pos', recupId);
          task_details.classList.remove('select');
    });
    left_btn.addEventListener('click', ()=>{
+      right_btn.style.visibility='visible';
          task_details.classList.add('select');
          var recupId=parseInt(task_details.parentElement.getAttribute("id"));
          var recupId=recupId-1
-         deplacer(document.getElementById(recupId))
-         //console.log(document.getElementById(cpt))
+         deplacer(document.getElementById(recupId));
+         task_details.setAttribute('data-pos', recupId);
          task_details.classList.remove('select');
    });
-   //update
    
    
 }
 
 
 form.addEventListener('submit', (e)=>{
-   e.preventDefault();
-   if(submit.getAttribute('data-modif')=='true')
-   {
-      document.querySelector('.task_details').innerHTML="";
-      document.querySelector('.task_details').dataset.tache==tache.value;
-      document.querySelector('.task_details').dataset.date==date.value;
-      document.querySelector('.task_details').dataset.time-start==start_hour.value;
-      document.querySelector('.task_details').dataset.time-end== end_hour.value;
-      modal_all.classList.remove('show');
-      submit.removeAttribute('data-modif');                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-   }
-   else
+      e.preventDefault();
+   if(submit.getAttribute('data-modif')!='true')
    {
       id1=document.getElementById('1');
       add_task(id1);
       modal_all.classList.remove('show');
    }
    //reset()
+   submit.removeAttribute('data-modif');  
    form.reset();
 });
 //rebuild
