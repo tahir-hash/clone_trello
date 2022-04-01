@@ -6,6 +6,7 @@ const burger=document.getElementById('burger');
 const colonne = document.getElementById('col');
 const note = document.getElementById('note');
 const refresh = document.getElementById('refresh');
+const save = document.getElementById('save');
 const modal=document.querySelector('.modal');
 const modal_all=document.querySelector('.modal_all');
 const close=document.getElementById('close');
@@ -17,6 +18,40 @@ const date= document.getElementById('date');
 const start_hour= document.getElementById('start_hour');
 const end_hour= document.getElementById('start_end');
 const submit= document.getElementById('submit');
+//-----------------------------validation
+function showError(input, message) {//Afficher les messages d'erreur
+   const formControl = input.parentElement;
+   formControl.className = 'form-control error';
+   const small = formControl.querySelector('small');
+   small.innerText = message;
+}
+//
+function showSuccess(input) {
+   const formControl = input.parentElement;
+   formControl.className = 'form-control success'; 
+}
+//empty
+function emptyChamps(champInput)
+{
+    if(champInput.value==='')
+    {
+      showError(champInput,`Ce champ est obligatoire`);
+      return true;
+    }
+    else
+    showSuccess(champInput);
+}
+function emptyDate(input, input1,input2)
+{
+   if(input.value=="")
+   {
+      showError(input1,`Veuillez renseigner une date dabord`);
+      showError(input2,`Veuillez renseigner une date dabord`);
+      return true;
+   }
+   else
+   showSuccess(input);
+}
 //valid date
 var date_now= moment();
    date_now= date_now.format('YYYY-MM-DD');
@@ -171,36 +206,36 @@ function add_task(div)
    details.appendChild(h42);
    text_des.appendChild(details);
    task_name.appendChild(text_des);
-   task_name.appendChild(right_btn);
    task_name.appendChild(del_task);
+   task_name.appendChild(right_btn);
    task_details.appendChild(task_name);
    div.appendChild(task_details);
    //fleche
-   setInterval(() => {
       var dateV = task_details.getAttribute('data-date');
       var heureStartV = task_details.getAttribute('data-time-start');
       var heureEndV = task_details.getAttribute('data-time-end');
-
-      var timeStart = heureStartV.split(':');
-      var timeEnd = heureEndV.split(':');
-      // console.log(heure_input_debut);
-      // console.log(min_input_debut);
-
-      var now = new Date();
-      var nowH = now.getHours();
-      var nowM  = now.getMinutes();
-      if((timeStart[0]==nowH) && (timeStart[1] == nowM)){
-          task_name.style.backgroundColor="green";
-      }
-      else if((timeEnd[0]==nowH) && (timeEnd[1] == nowM)){
-         //alert('ok')
-         task_name.style.backgroundColor="#605d5d";
-         left_btn.style.visibility='hidden';
-         right_btn.style.visibility='hidden';
-         task_details.classList.remove('modif');
-     }
- },1000); 
- 
+      var debut= `${date.value}`+ " "+ `${heureStartV}`;
+      debut= moment(debut,'YYYY-MM-DD HH:mm')
+      var fin= `${date.value}`+ " "+ `${heureEndV}`;
+      fin= moment(fin,'YYYY-MM-DD HH:mm')
+      var now= moment();
+      var diff= debut.diff(now)
+      setTimeout(() => {
+         task_name.style.backgroundColor="green";
+         let interval= setInterval(() => {
+            var now2=moment();
+            var diffFin= fin.diff(now2);
+            if(diffFin<=0)
+            {
+               task_name.style.backgroundColor="#605d5d";
+               left_btn.style.visibility='hidden';
+               right_btn.style.visibility='hidden';
+               task_details.classList.remove('modif');
+               clearInterval(interval);
+            }
+         }, 1000);
+      }, diff);
+      
    //event
    task_name.addEventListener('mouseenter',()=>{
       text_des.classList.add('show');
@@ -318,18 +353,26 @@ function add_task(div)
    
 }
 
-
 form.addEventListener('submit', (e)=>{
       e.preventDefault();
-   if(submit.getAttribute('data-modif')!='true')
-   {
-      id1=document.getElementById('1');
-      add_task(id1);
-      modal_all.classList.remove('show');
-   }
-   //reset()
-   submit.removeAttribute('data-modif');  
-   form.reset();
+     
+
+      if(emptyChamps(tache) || emptyDate(date,start_hour,end_hour))
+      {
+         return false;
+      }
+      else
+      {
+         if(submit.getAttribute('data-modif')!='true')
+         {
+            id1=document.getElementById('1');
+            add_task(id1);
+            modal_all.classList.remove('show');
+         }
+         //reset()
+         submit.removeAttribute('data-modif');  
+         form.reset();
+      }
 });
 //rebuild
 function rebuild()

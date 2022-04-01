@@ -1,3 +1,7 @@
+:root{
+    --success-color: #2ecc71;
+    --error-color: #e74c3c;
+}
 *, ::after, ::before
 {
     box-sizing: border-box;
@@ -37,11 +41,11 @@ body
 }
 .try
 {
-    display: none;
+    visibility: hidden;
 }
 .try.show
 {
-    display: block;
+    visibility: visible;
 }
 #burger
 {
@@ -53,7 +57,13 @@ body
 {
     position: absolute;
     bottom: 3%;
-    right: 50%;
+    right: 30%;
+}
+#save
+{
+    position: absolute;
+    bottom: 3%;
+    left: 30%;
 }
 .add span
 {
@@ -306,4 +316,26 @@ body
     padding-bottom: 2%;
 
 }
-/* hjcvgdkj, */
+/* VALIDATION JS */
+.form-control input:focus,form-control textarea:focus{
+    outline: 0;
+    border-color: #777;
+}
+
+.form-control.success input,.form-control.success textarea{
+    border-color: var(--success-color);
+}
+
+.form-control.error input, .form-control.error textarea{
+    border-color: var(--error-color);
+}
+
+.form-control small{
+    color: var(--error-color);
+    visibility: hidden;
+}
+
+.form-control.error small{
+    visibility: visible;
+    margin-left: 3%;
+}
