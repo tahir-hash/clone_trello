@@ -52,6 +52,7 @@ body
     position: absolute;
     bottom: 3%;
     right: 1%;
+    opacity: 0.5;
 }
 #refresh
 {

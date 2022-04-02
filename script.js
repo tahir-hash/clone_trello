@@ -41,30 +41,32 @@ function emptyChamps(champInput)
     else
     showSuccess(champInput);
 }
-function emptyDate(input, input1,input2)
+function hour_sup(input, input2)
 {
-   if(input.value=="")
-   {
-      showError(input1,`Veuillez renseigner une date dabord`);
-      showError(input2,`Veuillez renseigner une date dabord`);
+  var startH= moment(input.value,'HH:mm');
+  var endH= moment(input2.value,'HH:mm');
+  var diff= moment.duration(endH.diff(startH));
+  var heure= parseInt(diff.asHours());
+  var min= parseInt(diff.asMinutes()) %60;
+  if(heure<=0 && min<=0)
+  {
+      showError(input,``);
+      showError(input2,`L'heure de fin doit etre  superieur à l'heure de fin`);
       return true;
-   }
-   else
-   showSuccess(input);
+  }
 }
+
 //valid date
 var date_now= moment();
-   date_now= date_now.format('YYYY-MM-DD');
-   date.setAttribute('min', date_now);
+date_now= date_now.format('YYYY-MM-DD');
+date.setAttribute('min', date_now);
 //valid start hour
-
-
 ///
 var nbrElements = 0;
-const tab_color = ['#C1E1F5','#952D14',"#F6F46A","#D6CE8B","#FAD49F"]
-colonne.addEventListener('click',()=> 
+const tab_color = ['#C1E1F5','#952D14',"#F6F46A","#D6CE8B","#FAD49F"];
+function createColumn()
 {
-         nbrElements++;
+   nbrElements++;
 console.log(nbrElements);
 
       const subcontain = document.getElementById("subcontain");
@@ -127,8 +129,8 @@ console.log(nbrElements);
          }
          
       });
-});
-
+}
+colonne.addEventListener('click', createColumn);
 //add note
 note.addEventListener('click',()=>{
    modal_all.classList.toggle('show');
@@ -152,10 +154,10 @@ refresh.addEventListener('click', ()=>{
             deplacer(document.getElementById('1'))
             element.classList.remove('select');
             }
-            
          });
          
 });
+
 //restore
 burger.addEventListener('click',()=>{
    restore.classList.toggle('show');
@@ -211,7 +213,7 @@ function add_task(div)
    task_details.appendChild(task_name);
    div.appendChild(task_details);
    //fleche
-      var dateV = task_details.getAttribute('data-date');
+      //var dateV = task_details.getAttribute('data-date');
       var heureStartV = task_details.getAttribute('data-time-start');
       var heureEndV = task_details.getAttribute('data-time-end');
       var debut= `${date.value}`+ " "+ `${heureStartV}`;
@@ -305,10 +307,8 @@ function add_task(div)
              //  form.reset();
              //  e.preventDefault();
             });
-         }
-         
-      }
-      
+         }        
+      }     
    });
    setInterval(() => {
       var test=parseInt(task_details.parentElement.getAttribute("id"));
@@ -354,10 +354,9 @@ function add_task(div)
 }
 
 form.addEventListener('submit', (e)=>{
-      e.preventDefault();
-     
 
-      if(emptyChamps(tache) || emptyDate(date,start_hour,end_hour))
+e.preventDefault(); 
+      if(emptyChamps(tache) || hour_sup(start_hour,end_hour))
       {
          return false;
       }
@@ -397,4 +396,44 @@ function deplacer (to)
             to.appendChild(element);
          }
    });
+}
+
+///COM AVEC LE SERVER
+save.addEventListener('click', async ()=>{
+   var fetcher= await get_fetch();
+   console.log(fetcher);
+})
+async function get_fetch()
+{
+  /*  var obj= JSON.stringify(
+      {
+         date_save: "sgg",
+         column: [
+             {
+                 position_column: 1,
+                 title_column: "x",
+                 task: [
+                     {
+                         description_task: "s",
+                         date_task: "21/02/",
+                         task_start: "s",
+                         task_end: "gs",
+                         etat: 1
+                     }
+                 ]
+             }
+         ]
+     }
+     ); */
+   var formData= new FormData();
+   formData.append("controller","tache");
+   formData.append("action","send");
+   formData.append("test","mbayepro21");
+   //
+  
+   let reponse= await fetch('http://localhost/trello/public/',{
+      method: "POST",
+      body: formData
+   });
+   return await reponse.json();
 }
