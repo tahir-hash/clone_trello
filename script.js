@@ -73,6 +73,7 @@ console.log(nbrElements);
       const contain_element = document.createElement("div");
       contain_element.style.backgroundColor=tab_color[nbrElements-1];
       contain_element.setAttribute("class", "contain_element count animate__animated animate__rotateInDownLeft");
+      contain_element.setAttribute('data-position', nbrElements);
       const name_col = document.createElement("div");
       name_col.setAttribute("class", "name_col");
       const div_name= document.createElement('div');
@@ -83,6 +84,7 @@ console.log(nbrElements);
       input.innerText="Colonne"+" "+nbrElements;
       input.setAttribute("id", 'input'+nbrElements);
       input.setAttribute("class", 'inp');
+      input.setAttribute('data-inpc', input.innerText);
       const pose_note = document.createElement("div");
       //apend
       pose_note.setAttribute("class", "pos_note");
@@ -114,6 +116,8 @@ console.log(nbrElements);
          tempVal.appendChild(newInput);
          newInput.addEventListener('blur',function(){
              tempVal.innerHTML = newInput.value;
+             input.setAttribute('data-inpc',newInput.value);
+
          })
          newInput.focus();
      });
@@ -356,12 +360,12 @@ function add_task(div)
 form.addEventListener('submit', (e)=>{
 
 e.preventDefault(); 
-      if(emptyChamps(tache) || hour_sup(start_hour,end_hour))
+      /* if(emptyChamps(tache) || hour_sup(start_hour,end_hour)|| emptyChamps(date)|| emptyChamps(start_hour)||emptyChamps(end_hour))
       {
          return false;
       }
       else
-      {
+      { */
          if(submit.getAttribute('data-modif')!='true')
          {
             id1=document.getElementById('1');
@@ -371,7 +375,7 @@ e.preventDefault();
          //reset()
          submit.removeAttribute('data-modif');  
          form.reset();
-      }
+     // }
 });
 //rebuild
 function rebuild()
@@ -381,11 +385,17 @@ function rebuild()
          a++;
          input.innerText= "Colonne"+" "+a;
        });
+
    let allId=document.querySelectorAll('.pos_note');
        allId.forEach((pose_note,b)=>{
          b++
          pose_note.setAttribute("id", b);
        });
+   let col= document.querySelectorAll('.count');
+      col.forEach((contain_element,c)=>{
+         c++
+         contain_element.setAttribute("data-position", c);
+      });
 }
 function deplacer (to)
 {
@@ -397,38 +407,44 @@ function deplacer (to)
          }
    });
 }
-
 ///COM AVEC LE SERVER
 save.addEventListener('click', async ()=>{
    var fetcher= await get_fetch();
    console.log(fetcher);
-})
+   
+});
+
 async function get_fetch()
 {
-  /*  var obj= JSON.stringify(
-      {
-         date_save: "sgg",
-         column: [
-             {
-                 position_column: 1,
-                 title_column: "x",
-                 task: [
-                     {
-                         description_task: "s",
-                         date_task: "21/02/",
-                         task_start: "s",
-                         task_end: "gs",
-                         etat: 1
-                     }
-                 ]
-             }
-         ]
-     }
-     ); */
+   
+   var count=document.querySelectorAll('.count');
+   let tab=[];
+   let tab_task=[];
+   count.forEach(element => {
+    var title=element.childNodes[0].innerText;
+    var num_col= element.getAttribute('data-position');
+    console.log(num_col); 
+   var taches=element.querySelectorAll('.task_details');
+      taches.forEach(elementTask => {
+         let object={
+            task_object:Array({
+               description_task:elementTask.getAttribute('data-tache'),
+            date_task:elementTask.getAttribute('data-date'),
+            task_start:elementTask.getAttribute('data-time-start'),
+            task_end:elementTask.getAttribute('data-time-end')
+            })
+         }
+      tab.push(object);
+      //tab.push(title);
+      });
+   });
+var json= JSON.stringify(tab);
+   var dateToday=moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
    var formData= new FormData();
    formData.append("controller","tache");
    formData.append("action","send");
-   formData.append("test","mbayepro21");
+   formData.append("date", dateToday);
+   formData.append('object',json)
    //
   
    let reponse= await fetch('http://localhost/trello/public/',{
