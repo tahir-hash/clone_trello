@@ -11,6 +11,9 @@ const modal=document.querySelector('.modal');
 const modal_all=document.querySelector('.modal_all');
 const close=document.getElementById('close');
 const setting= document.getElementById('set');
+const select= document.getElementById('select');
+
+
 // form
 const form= document.getElementById('form');
 const tache= document.getElementById('tache');
@@ -67,12 +70,10 @@ const tab_color = ['#C1E1F5','#952D14',"#F6F46A","#D6CE8B","#FAD49F"];
 function createColumn()
 {
    nbrElements++;
-console.log(nbrElements);
-
       const subcontain = document.getElementById("subcontain");
       const contain_element = document.createElement("div");
       contain_element.style.backgroundColor=tab_color[nbrElements-1];
-      contain_element.setAttribute("class", "contain_element count animate__animated animate__rotateInDownLeft");
+      contain_element.setAttribute("class", "contain_element count animate__animated animate__slideInLeft");
       contain_element.setAttribute('data-position', nbrElements);
       const name_col = document.createElement("div");
       name_col.setAttribute("class", "name_col");
@@ -138,6 +139,7 @@ colonne.addEventListener('click', createColumn);
 //add note
 note.addEventListener('click',()=>{
    modal_all.classList.toggle('show');
+   submit.removeAttribute('data-test');
 });
 //close modal
 close.addEventListener('click',()=>{
@@ -168,16 +170,26 @@ burger.addEventListener('click',()=>{
 });
 // add task
 
-function add_task(div)
+function add_task(div,tab)
 {
    const task_details=document.createElement('div');
    task_details.setAttribute('class','task_details animate__animated animate__jackInTheBox modif');
-   task_details.setAttribute('data-tache', tache.value);
-   task_details.setAttribute('data-date', date.value);
-   task_details.setAttribute('data-time-start', start_hour.value);
-   task_details.setAttribute('data-time-end', end_hour.value);
-   task_details.setAttribute('data-pos', "1");
-
+   if(submit.getAttribute('data-test')=='test')
+   {
+      task_details.setAttribute('data-tache', tab.description_task);
+      task_details.setAttribute('data-date', tab.date_task);
+      task_details.setAttribute('data-time-start', tab.task_start);
+      task_details.setAttribute('data-time-end', tab.task_end);
+      task_details.setAttribute('data-pos', tab.position);
+   }
+   else
+   {
+      task_details.setAttribute('data-tache', tache.value);
+      task_details.setAttribute('data-date', date.value);
+      task_details.setAttribute('data-time-start', start_hour.value);
+      task_details.setAttribute('data-time-end', end_hour.value);
+      task_details.setAttribute('data-pos', "1");
+   }
    
    const task_name=document.createElement('div');
    task_name.setAttribute('class','task_name');
@@ -217,12 +229,12 @@ function add_task(div)
    task_details.appendChild(task_name);
    div.appendChild(task_details);
    //fleche
-      //var dateV = task_details.getAttribute('data-date');
+      var dateV = task_details.getAttribute('data-date');
       var heureStartV = task_details.getAttribute('data-time-start');
       var heureEndV = task_details.getAttribute('data-time-end');
-      var debut= `${date.value}`+ " "+ `${heureStartV}`;
+      var debut= `${dateV}`+ " "+ `${heureStartV}`;
       debut= moment(debut,'YYYY-MM-DD HH:mm')
-      var fin= `${date.value}`+ " "+ `${heureEndV}`;
+      var fin= `${dateV}`+ " "+ `${heureEndV}`;
       fin= moment(fin,'YYYY-MM-DD HH:mm')
       var now= moment();
       var diff= debut.diff(now)
@@ -241,7 +253,7 @@ function add_task(div)
             }
          }, 1000);
       }, diff);
-      
+
    //event
    task_name.addEventListener('mouseenter',()=>{
       text_des.classList.add('show');
@@ -291,6 +303,7 @@ function add_task(div)
             date.value=task_details.getAttribute('data-date');
             start_hour.value=task_details.getAttribute('data-time-start');
             end_hour.value=task_details.getAttribute('data-time-end');
+            submit.removeAttribute('data-test');
             submit.setAttribute('data-modif', 'true');
             //submit
             submit.addEventListener('click', ()=>{
@@ -409,47 +422,104 @@ function deplacer (to)
 }
 ///COM AVEC LE SERVER
 save.addEventListener('click', async ()=>{
-   var fetcher= await get_fetch();
+   var fetcher= await post_fetch();
    console.log(fetcher);
-   
 });
 
-async function get_fetch()
+async function post_fetch()
 {
    
    var count=document.querySelectorAll('.count');
    let tab=[];
-   let tab_task=[];
    count.forEach(element => {
     var title=element.childNodes[0].innerText;
     var num_col= element.getAttribute('data-position');
-    console.log(num_col); 
    var taches=element.querySelectorAll('.task_details');
+   /* let object1={
+      title_column: title,
+      position: num_col,
+   } */
       taches.forEach(elementTask => {
          let object={
-            task_object:Array({
+               position:num_col,
                description_task:elementTask.getAttribute('data-tache'),
-            date_task:elementTask.getAttribute('data-date'),
-            task_start:elementTask.getAttribute('data-time-start'),
-            task_end:elementTask.getAttribute('data-time-end')
-            })
+               date_task:elementTask.getAttribute('data-date'),
+               task_start:elementTask.getAttribute('data-time-start'),
+               task_end:elementTask.getAttribute('data-time-end')
+            
          }
       tab.push(object);
-      //tab.push(title);
+
       });
    });
 var json= JSON.stringify(tab);
    var dateToday=moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
+   var cpt=document.querySelectorAll('.count').length;
    var formData= new FormData();
    formData.append("controller","tache");
    formData.append("action","send");
    formData.append("date", dateToday);
    formData.append('object',json)
-   //
+   formData.append('numb_col',cpt);
+   
   
    let reponse= await fetch('http://localhost/trello/public/',{
       method: "POST",
       body: formData
    });
+   notif("Enregistrement reussi");
    return await reponse.json();
 }
+//method get
+function restaurer()
+{
+   fetch('http://localhost/trello/public/?controller=tache&action=restore').then(response => response.json().then(data => {
+      data.forEach(element => {
+         const option=document.createElement('option');
+         option.innerText= element.date_save;
+         select.appendChild(option);
+      });
+    })); 
+  
+}
+function notif(message)
+{
+         const notif =document.querySelector('.notification');
+         notif.classList.add('show');
+        const div =document.createElement('div');
+        const p=document.createElement("p");
+        p.innerText=message;
+        notif.style.backgroundColor= '#96DF73'
+        div.appendChild(p);
+        notif.appendChild(div);
+        setTimeout(() => {
+            notif.removeChild(div)
+            notif.classList.remove('show');
+        }, 2000);
+}
+function get_fetch()
+{
+   submit.setAttribute('data-test','test');
+    fetch('http://localhost/trello/public/?controller=tache&action=lister').then(response => response.json().then(data => {
+      columnGenerator(data.nbr_col);
+      console.log(data.column)
+      data.column.forEach(element => {
+         add_task(document.getElementById(element.position),element)
+      });
+    })); 
+}
+
+function columnGenerator(nbr)
+{
+   for (let i=1; i<=nbr; i++)
+   {
+      if(nbr<=5)
+      {
+         createColumn(); 
+      }
+   }
+}
+window.addEventListener('load', ()=>{
+   get_fetch();
+   restaurer();
+})
