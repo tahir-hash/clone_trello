@@ -11,8 +11,7 @@ const modal=document.querySelector('.modal');
 const modal_all=document.querySelector('.modal_all');
 const close=document.getElementById('close');
 const setting= document.getElementById('set');
-const select= document.getElementById('select');
-
+const select_tag= document.getElementById('select');
 
 // form
 const form= document.getElementById('form');
@@ -130,6 +129,7 @@ function createColumn()
             subcontain.removeChild(contain_element);  
             nbrElements--;
             colonne.style.display='block';
+            notif("Vous venez de supprimer la colonne numero"+contain_element.getAttribute('data-position'),"#e21414");
             rebuild(); 
          }
          
@@ -160,8 +160,7 @@ refresh.addEventListener('click', ()=>{
             deplacer(document.getElementById('1'))
             element.classList.remove('select');
             }
-         });
-         
+         });         
 });
 
 //restore
@@ -229,31 +228,27 @@ function add_task(div,tab)
    task_details.appendChild(task_name);
    div.appendChild(task_details);
    //fleche
-      var dateV = task_details.getAttribute('data-date');
+
+   setInterval(() => {
       var heureStartV = task_details.getAttribute('data-time-start');
       var heureEndV = task_details.getAttribute('data-time-end');
-      var debut= `${dateV}`+ " "+ `${heureStartV}`;
-      debut= moment(debut,'YYYY-MM-DD HH:mm')
-      var fin= `${dateV}`+ " "+ `${heureEndV}`;
-      fin= moment(fin,'YYYY-MM-DD HH:mm')
-      var now= moment();
-      var diff= debut.diff(now)
-      setTimeout(() => {
-         task_name.style.backgroundColor="green";
-         let interval= setInterval(() => {
-            var now2=moment();
-            var diffFin= fin.diff(now2);
-            if(diffFin<=0)
-            {
-               task_name.style.backgroundColor="#605d5d";
-               left_btn.style.visibility='hidden';
-               right_btn.style.visibility='hidden';
-               task_details.classList.remove('modif');
-               clearInterval(interval);
-            }
-         }, 1000);
-      }, diff);
 
+      var time_input_debut = heureStartV.split(':');
+      var time_input_fin = heureEndV.split(':');
+      var now = new Date();
+      var hourN = now.getHours();
+      var minN = now.getMinutes();
+      if((time_input_debut[0]== hourN) && (time_input_debut[1] == minN)){
+          task_name.style.backgroundColor = "green";
+      }
+      else if((time_input_fin[0] == hourN) && (time_input_fin[1] == minN)){
+            task_name.style.backgroundColor="#605d5d";
+            left_btn.style.visibility='hidden';
+            right_btn.style.visibility='hidden';
+            del_task.style.visibility='hidden';
+            task_details.classList.remove('modif');
+      }
+ },1000);
    //event
    task_name.addEventListener('mouseenter',()=>{
       text_des.classList.add('show');
@@ -271,6 +266,9 @@ function add_task(div,tab)
       {
       task_details.classList.add('select');
       deplacer(document.getElementById("Corbeille"))
+      task_details.setAttribute('data-delete', "Corbeille");
+      left_btn.style.visibility='hidden';
+      right_btn.style.visibility='hidden';
       task_details.classList.remove('select');
       }
       else
@@ -281,6 +279,9 @@ function add_task(div,tab)
             task_details.classList.add('select');
             idn= task_details.getAttribute('data-pos');
             deplacer(document.getElementById(idn))
+            task_details.removeAttribute('data-delete');
+            left_btn.style.visibility='visible';
+            right_btn.style.visibility='visible';
             task_details.classList.remove('select');
          }  
          else
@@ -319,10 +320,12 @@ function add_task(div,tab)
                   h4.innerHTML="Date:"+task_details.getAttribute('data-date');
                   h41.innerHTML="Heure debut:"+task_details.getAttribute('data-time-start');
                   h42.innerHTML="Heure fin:"+task_details.getAttribute('data-time-start');
+                  //moment
                }
                //reset()
              //  form.reset();
              //  e.preventDefault();
+
             });
          }        
       }     
@@ -373,12 +376,12 @@ function add_task(div,tab)
 form.addEventListener('submit', (e)=>{
 
 e.preventDefault(); 
-      /* if(emptyChamps(tache) || hour_sup(start_hour,end_hour)|| emptyChamps(date)|| emptyChamps(start_hour)||emptyChamps(end_hour))
+      if(emptyChamps(tache) || hour_sup(start_hour,end_hour)|| emptyChamps(date)|| emptyChamps(start_hour)||emptyChamps(end_hour))
       {
          return false;
       }
       else
-      { */
+      {
          if(submit.getAttribute('data-modif')!='true')
          {
             id1=document.getElementById('1');
@@ -388,7 +391,7 @@ e.preventDefault();
          //reset()
          submit.removeAttribute('data-modif');  
          form.reset();
-     // }
+      }
 });
 //rebuild
 function rebuild()
@@ -397,6 +400,7 @@ function rebuild()
    column.forEach((input,a)=>{
          a++;
          input.innerText= "Colonne"+" "+a;
+
        });
 
    let allId=document.querySelectorAll('.pos_note');
@@ -409,6 +413,11 @@ function rebuild()
          c++
          contain_element.setAttribute("data-position", c);
       });
+      let color= document.querySelectorAll('.count');
+      color.forEach((contain_element,d)=>{
+         contain_element.style.backgroundColor=tab_color[d];
+          });
+
 }
 function deplacer (to)
 {
@@ -429,27 +438,20 @@ save.addEventListener('click', async ()=>{
 async function post_fetch()
 {
    
-   var count=document.querySelectorAll('.count');
+   var count=document.querySelectorAll('.contain_element');
    let tab=[];
    count.forEach(element => {
-    var title=element.childNodes[0].innerText;
-    var num_col= element.getAttribute('data-position');
    var taches=element.querySelectorAll('.task_details');
-   /* let object1={
-      title_column: title,
-      position: num_col,
-   } */
       taches.forEach(elementTask => {
          let object={
-               position:num_col,
+               position:elementTask.getAttribute('data-pos'),
+               position1:elementTask.getAttribute('data-delete'),
                description_task:elementTask.getAttribute('data-tache'),
                date_task:elementTask.getAttribute('data-date'),
                task_start:elementTask.getAttribute('data-time-start'),
                task_end:elementTask.getAttribute('data-time-end')
-            
          }
       tab.push(object);
-
       });
    });
 var json= JSON.stringify(tab);
@@ -467,46 +469,44 @@ var json= JSON.stringify(tab);
       method: "POST",
       body: formData
    });
-   notif("Enregistrement reussi");
+   notif("Enregistrement reussi","#96DF73");
    return await reponse.json();
 }
 //method get
-function restaurer()
+function get_fetch(url)
 {
-   fetch('http://localhost/trello/public/?controller=tache&action=restore').then(response => response.json().then(data => {
-      data.forEach(element => {
-         const option=document.createElement('option');
-         option.innerText= element.date_save;
-         select.appendChild(option);
+   submit.setAttribute('data-test','test');
+    fetch(url).then(response => response.json().then(data => {
+       console.log(data)
+      columnGenerator(data.nbr_col);
+      console.log(data.column)
+      data.column.forEach(element => {
+         if(element.position1!="Corbeille")
+         {
+            add_task(document.getElementById(element.position),element)
+         }
+         else
+         {
+            add_task(document.getElementById(element.position1),element)
+         }
       });
     })); 
-  
 }
-function notif(message)
+
+function notif(message, color)
 {
          const notif =document.querySelector('.notification');
          notif.classList.add('show');
         const div =document.createElement('div');
         const p=document.createElement("p");
         p.innerText=message;
-        notif.style.backgroundColor= '#96DF73'
+        notif.style.backgroundColor= color
         div.appendChild(p);
         notif.appendChild(div);
         setTimeout(() => {
             notif.removeChild(div)
             notif.classList.remove('show');
         }, 2000);
-}
-function get_fetch()
-{
-   submit.setAttribute('data-test','test');
-    fetch('http://localhost/trello/public/?controller=tache&action=lister').then(response => response.json().then(data => {
-      columnGenerator(data.nbr_col);
-      console.log(data.column)
-      data.column.forEach(element => {
-         add_task(document.getElementById(element.position),element)
-      });
-    })); 
 }
 
 function columnGenerator(nbr)
@@ -520,6 +520,6 @@ function columnGenerator(nbr)
    }
 }
 window.addEventListener('load', ()=>{
-   get_fetch();
-   restaurer();
+   get_fetch('http://localhost/trello/public/?controller=tache&action=lister');
+  // generateOption();
 })
